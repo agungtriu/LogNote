@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
   note.init({
     imageType: DataTypes.STRING,
     imageName: DataTypes.STRING,
-    imageData: DataTypes.BLOB,
+    imageData: DataTypes.BLOB('long'),
     text: DataTypes.STRING,
     projectId: DataTypes.INTEGER
   }, {
