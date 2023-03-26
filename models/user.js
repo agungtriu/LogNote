@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       user.hasOne(models.profile);
-      user.belongsToMany(models.product, { through: models.projectUser });
+      user.belongsToMany(models.project, { through: models.projectUser });
     }
   }
   user.init(
