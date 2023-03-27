@@ -6,17 +6,13 @@
 3. Postgres (DBMS)
 
   - One To One
-
   - One To Many
-
   - Many To Many 
 
 4. Sequelize (ORM)
 
   - Basic Query / CRUD (WAJIB)
-
   - Validations
-
   - Hooks
 
 5. EJS (Template Engne)
