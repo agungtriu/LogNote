@@ -4,13 +4,15 @@ const note = models.note;
 const project = models.project;
 class NoteController {
   static async getAll(req, res) {
-    if (req.session.username && req.session.role === "admin") {
+    if (req.session.username) {
       try {
         const notes = await note.findAll({ include: [project] });
         notes.map((note) => {
-          const noteImage = note.imageData.toString("base64");
-          note["imageData"] = noteImage;
-          return note;
+          if (note.imageData) {
+            const noteImage = note.imageData.toString("base64");
+            note["imageData"] = noteImage;
+            return note;
+          }
         });
         // res.json({ status: true, count: notes.length, data: notes });
         res.render("notes/index.ejs", {
@@ -30,7 +32,7 @@ class NoteController {
   }
 
   static async addPage(req, res) {
-    if (req.session.username && req.session.role === "admin") {
+    if (req.session.username) {
       const projects = await project.findAll({ order: [["id", "ASC"]] });
       res.render("notes/createPage.ejs", { projects });
     } else {
@@ -39,19 +41,31 @@ class NoteController {
   }
 
   static async add(req, res) {
-    if (req.session.username && req.session.role === "admin") {
+    if (req.session.username) {
       try {
+        let result;
         const { text, projectId } = req.body;
-        const imageType = req.file.mimetype;
-        const imageName = req.file.originalname;
-        const imageData = req.file.buffer;
-        const result = await note.create({
-          imageType,
-          imageName,
-          imageData,
-          text,
-          projectId,
-        });
+        if (req.file) {
+          const imageType = req.file.mimetype;
+          const imageName = req.file.originalname;
+          const imageData = req.file.buffer;
+
+          result = await note.create({
+            imageType,
+            imageName,
+            imageData,
+            text,
+            projectId,
+          });
+        } else {
+          result = await note.create({
+            imageType: null,
+            imageName: null,
+            imageData: null,
+            text,
+            projectId,
+          });
+        }
         // res.json({ status: true, data: result });
         req.flash("success", "Note has been created.");
         res.redirect("/notes");
@@ -67,7 +81,7 @@ class NoteController {
   }
 
   static async delete(req, res) {
-    if (req.session.username && req.session.role === "admin") {
+    if (req.session.username) {
       try {
         const id = Number(req.params.id);
         const result = await note.destroy({

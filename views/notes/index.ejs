@@ -32,11 +32,13 @@
           <td><%= note.project.name %></td>
           <td><%= note.text %></td>
           <td>
+            <%if (note.imageType) { %>
             <img
               src="data:<%=note.imageType%>;base64, <%=note.imageData%>"
-              class="img-thumbnail w-25"
+              class="img-thumbnail w-50"
               alt="image"
             />
+            <% } %>
           </td>
           <td>
             <a href="\notes\delete\<%=note.id%>"
