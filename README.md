@@ -5,23 +5,23 @@
 2. Express
 3. Postgres (DBMS)
 
-- One To One
+  - One To One
 
-- One To Many
+  - One To Many
 
-- Many To Many 
+  - Many To Many 
 
 4. Sequelize (ORM)
 
-- Basic Query / CRUD (WAJIB)
+  - Basic Query / CRUD (WAJIB)
 
-- Validations
+  - Validations
 
-- Hooks
+  - Hooks
 
 5. EJS (Template Engne)
 
-- CSS framework menggunakan Bootstrap
+  - CSS framework menggunakan Bootstrap
 
 ### Entity Relational Diagram / ERD (WAJIB!!)
 
