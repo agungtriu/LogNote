@@ -18,8 +18,22 @@ module.exports = (sequelize, DataTypes) => {
     imageType: DataTypes.STRING,
     imageName: DataTypes.STRING,
     imageData: DataTypes.BLOB('long'),
-    text: DataTypes.STRING,
-    projectId: DataTypes.INTEGER
+    text: {
+      type: DataTypes.TEXT,
+      validate: {
+        notEmpty: {
+          message: "Text can not be empty.",
+        },
+      },
+    },
+    projectId: {
+      type: DataTypes.INTEGER,
+      validate: {
+        notEmpty: {
+          message: "projectId can not be empty.",
+        },
+      },
+    },
   }, {
     sequelize,
     modelName: 'note',

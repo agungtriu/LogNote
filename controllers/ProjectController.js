@@ -1,4 +1,5 @@
 const models = require("../models");
+const note = models.note;
 const projectuser = models.projectUser;
 const project = models.project;
 const user = models.user;
@@ -11,7 +12,7 @@ class ProjectController {
     } catch (error) {
       res.json({
         status: false,
-        error: "Server Error",
+        error: error,
       });
     }
   }
@@ -22,7 +23,7 @@ class ProjectController {
     } catch (error) {
       res.json({
         status: false,
-        error: "Server Error",
+        error: error,
       });
     }
   }
@@ -55,8 +56,8 @@ class ProjectController {
         where: { id },
       });
       const deleteNote = await note.destroy({
-        where: {projectId: id}
-      })
+        where: { projectId: id },
+      });
       const deleteProjectUser = await projectuser.destroy({
         where: { projectId: id },
       });
@@ -69,7 +70,7 @@ class ProjectController {
     } catch (error) {
       res.json({
         status: false,
-        error: "Server Error",
+        error: error,
       });
     }
   }
@@ -80,9 +81,9 @@ class ProjectController {
       const users = await user.findAll();
       res.render("projects/editPage.ejs", { project, users });
     } catch (error) {
-      res.sendStatus(500).json({
+      res.json({
         status: false,
-        error: "Server Error",
+        error: error,
       });
     }
   }
@@ -117,7 +118,7 @@ class ProjectController {
     } catch (error) {
       res.json({
         status: false,
-        error: "Server Error",
+        error: error,
       });
     }
   }

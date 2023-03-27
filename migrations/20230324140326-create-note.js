@@ -19,9 +19,11 @@ module.exports = {
         type: Sequelize.BLOB
       },
       text: {
-        type: Sequelize.STRING
+        allowNull: false,
+        type: Sequelize.TEXT
       },
       projectId: {
+        allowNull: false,
         type: Sequelize.INTEGER
       },
       createdAt: {

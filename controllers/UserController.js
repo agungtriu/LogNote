@@ -12,7 +12,7 @@ class UserController {
     } catch (error) {
       res.json({
         status: false,
-        error: "Server Error",
+        error: error,
       });
     }
   }
@@ -22,7 +22,6 @@ class UserController {
   static async register(req, res) {
     try {
       const { username, name, password, confirmPassword } = req.body;
-      const role = "user";
       let message = "";
       if (password === confirmPassword) {
         const result = await user.findOne({ where: { username } });
@@ -31,7 +30,6 @@ class UserController {
             username,
             name,
             password,
-            role,
           });
           const resultProfile = await profile.create({
             userId: result.id,
@@ -53,7 +51,7 @@ class UserController {
     } catch (error) {
       res.json({
         status: false,
-        error: "Server Error",
+        error: error,
       });
     }
   }
@@ -81,7 +79,7 @@ class UserController {
     } catch (error) {
       res.json({
         status: false,
-        error: "Server Error",
+        error: error,
       });
     }
   }
@@ -108,7 +106,7 @@ class UserController {
     } catch (error) {
       res.json({
         status: false,
-        error: "Server Error",
+        error: error,
       });
     }
   }
@@ -145,7 +143,7 @@ class UserController {
     } catch (error) {
       res.json({
         status: false,
-        error: "Server Error",
+        error: error,
       });
     }
   }
@@ -164,13 +162,13 @@ class UserController {
     } catch (error) {
       res.json({
         status: false,
-        error: "Server Error",
+        error: error,
       });
     }
   }
   static async editProfile(req, res) {
     try {
-      const { name, id, phone, address } = req.body;
+      const { name, email, position, phone, address } = req.body;
       const username = req.params.username;
       const resultUser = await user.update(
         {
@@ -178,12 +176,18 @@ class UserController {
         },
         { where: { username } }
       );
+      const userByUsername = await user.findOne({
+        where: { username },
+        include: [profile],
+      });
       const resultProfile = await profile.update(
         {
+          email,
+          position,
           phone,
           address,
         },
-        { where: { id } }
+        { where: { id: userByUsername.profile.id } }
       );
       if (resultProfile[0] === 1 && resultUser[0] === 1) {
         res.json({
@@ -195,7 +199,7 @@ class UserController {
     } catch (error) {
       res.json({
         status: false,
-        error: "Server Error",
+        error: error,
       });
     }
   }
@@ -219,7 +223,7 @@ class UserController {
     } catch (error) {
       res.json({
         status: false,
-        error: "Server Error",
+        error: error,
       });
     }
   }
