@@ -1,0 +1,62 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Space+Mono&display=swap');
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #f4f5f7;
+}
+
+table {
+    background-color: #fff;
+}
+
+.dropdown-item:hover {
+    color: #292b2c !important;
+}
+
+.fa-trash {
+    color: #D03D56;
+}
+
+.section-title > h2 {
+    color: #292b2c;
+}
+
+.section-notes {
+    margin-top: 50px;
+    margin-bottom: 25px;
+}
+
+.card-note {
+    color: #fff;
+    background-color: #292b2c;
+}
+
+.section-register {
+    margin: 50px 25px;
+}
+
+.bg-dark {
+    background-color: #292b2c !important;
+}
+
+.users-section > p, .users-section>  a {
+    font-size: 14px;
+    display: inline;
+    text-decoration: none;
+}
+
+.mask {
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+.message > div{
+    margin-bottom: 0;
+}
+
+a {
+    color: inherit;
+}
+
+.gradient-custom {
+    background: #292b2c;
+}

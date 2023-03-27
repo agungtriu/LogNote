@@ -6,9 +6,15 @@ const projectUser = models.projectUser;
 class UserController {
   static async getAll(req, res) {
     try {
-      const users = await user.findAll({ include: [profile] });
-      res.json({ status: true, count: users.length, data: users });
-      // res.render("users/index.ejs", { users });
+      const users = await user.findAll({
+        include: [profile],
+        order: [["role", "ASC"]],
+      });
+      res.render("users/index.ejs", {
+        users,
+        message: req.flash("success"),
+        error: req.flash("error"),
+      });
     } catch (error) {
       res.json({
         status: false,
@@ -17,7 +23,7 @@ class UserController {
     }
   }
   static registerPage(req, res) {
-    res.render("user/registerPage.ejs");
+    res.render("users/register/index.ejs", { message: req.flash("error") });
   }
   static async register(req, res) {
     try {
@@ -34,29 +40,33 @@ class UserController {
           const resultProfile = await profile.create({
             userId: result.id,
           });
+          const getUser = await user.findOne({ where: { username } });
+          req.session.username = getUser.username;
+          req.session.role = getUser.role;
           message = `${username} has been created`;
-          res.json({ status: true, message: message, result: result });
+          req.flash("success", message);
+          res.redirect("/");
         } else {
           message = `${username} not available`;
-          res.json({ status: false, message: message });
+          req.flash("error", message);
+          res.redirect("/users/register");
         }
       } else {
         message = "password and confirm password not match";
-        res.json({
-          status: false,
-          error: message,
-        });
+        req.flash("error", message);
+        res.redirect("/users/register");
       }
-      // res.render("users/registerPage.ejs", { message });
     } catch (error) {
-      res.json({
-        status: false,
-        error: error,
-      });
+      req.flash("error", "Internal Server Error");
+      res.redirect("/users/register");
+      // res.json({
+      //   status: false,
+      //   error: error,
+      // });
     }
   }
   static loginPage(req, res) {
-    res.render("user/loginPage.ejs");
+    res.render("users/login/index.ejs", { message: req.flash("error") });
   }
   static async login(req, res) {
     try {
@@ -64,24 +74,55 @@ class UserController {
       const result = await user.findOne({ where: { username } });
       if (result !== null) {
         if (password === result.password) {
-          res.json({ status: true, data: result });
-          // res.redirect("/notes");
+          req.session.username = result.username;
+          req.session.role = result.role;
+          req.flash("success", `Welcome back, ${result.username}`);
+          res.redirect("/");
         } else {
           const message = `password false`;
-          res.json({ status: false, error: message });
-          // res.render("users/loginPage.ejs", { message });
+          req.flash("error", message);
+          res.redirect("/users/login");
         }
       } else {
         const message = `${username} was not registered`;
-        res.json({ status: false, error: message });
-        // res.render("users/loginPage.ejs", { message });
+        req.flash("error", message);
+        res.redirect("/users/login");
       }
     } catch (error) {
-      res.json({
-        status: false,
-        error: error,
-      });
+      req.flash("error", "Internal Server Error");
+      res.redirect("/users/login");
+      // res.json({
+      //   status: false,
+      //   error: error,
+      // });
     }
+  }
+  static logout(req, res) {
+    try {
+      delete req.session.username;
+      delete req.session.role;
+      req.flash("success", "You have successfully logged out.");
+      res.redirect("/");
+    } catch (error) {
+      req.flash("error", "Internal Server Error");
+      res.redirect("/");
+      // res.json({
+      //   status: false,
+      //   error: "Server Error",
+      // });
+    }
+  }
+  static async detailPage(req, res) {
+    const username = req.params.username;
+    const detail = await user.findOne({
+      include: [profile],
+      where: { username },
+    });
+    res.render("users/profiles/index.ejs", {
+      detail,
+      message: req.flash("success"),
+      error: req.flash("error"),
+    });
   }
   static async detail(req, res) {
     try {
@@ -110,8 +151,18 @@ class UserController {
       });
     }
   }
-  static editPasswordPage(req, res) {
-    res.render("user/editPasswordPage.ejs");
+  static async editPasswordPage(req, res) {
+    const username = req.session.username;
+    const paramsUsername = req.params.username;
+
+    if (paramsUsername === username) {
+      res.render("users/profiles/editPasswordPage.ejs", {
+        error: req.flash("error"),
+      });
+    } else {
+      req.flash("error", "You don't have permission.");
+      res.redirect(`/users/detail/${username}`);
+    }
   }
   static async editPassword(req, res) {
     try {
@@ -126,18 +177,22 @@ class UserController {
           { where: { username } }
         );
         if (result[0] === 1) {
-          message = "password has been changed";
-          res.json({ status: true, message: message });
+          req.flash("success", "Password has been changed.");
+          res.redirect(`/users/detail/${username}`);
+          // message = "password has been changed";
+          // res.json({ status: true, message: message });
         } else {
           message = "password cannot change";
           res.json({ status: false, error: message });
         }
       } else {
         message = "password and confirm password not match";
-        res.json({
-          status: false,
-          error: message,
-        });
+        req.flash("error", message);
+        res.redirect(`/users/password/edit/${username}`);
+        // res.json({
+        //   status: false,
+        //   error: message,
+        // });
       }
       // res.render("user/editPasswordPage.ejs", message);
     } catch (error) {
@@ -148,22 +203,32 @@ class UserController {
     }
   }
   static async editProfilePage(req, res) {
-    try {
-      const username = req.params.username;
-      const detail = await user.findOne({
-        include: [profile],
-        where: { username },
-      });
-      res.json({
-        status: true,
-        data: detail,
-      });
-      // res.render("user/editProfilPage.ejs", {detail})
-    } catch (error) {
-      res.json({
-        status: false,
-        error: error,
-      });
+    const username = req.session.username;
+    const paramsUsername = req.params.username;
+
+    if (paramsUsername === username) {
+      try {
+        const username = req.params.username;
+        const detail = await user.findOne({
+          include: [profile],
+          where: { username },
+        });
+        // res.json({
+        //   status: true,
+        //   data: detail,
+        // });
+        res.render("users/profiles/editPage.ejs", {
+          detail,
+        });
+      } catch (error) {
+        res.json({
+          status: false,
+          error: error,
+        });
+      }
+    } else {
+      req.flash("error", "You don't have permission.");
+      res.redirect(`/users/detail/${username}`);
     }
   }
   static async editProfile(req, res) {
@@ -190,11 +255,12 @@ class UserController {
         { where: { id: userByUsername.profile.id } }
       );
       if (resultProfile[0] === 1 && resultUser[0] === 1) {
-        res.json({
-          status: true,
-          message: "update successfully",
-        });
-        // res.redirect(`/detail/${username}`)
+        req.flash("success", "Update successfully.");
+        res.redirect(`/users/detail/${username}`);
+        // res.json({
+        //   status: true,
+        //   message: "update successfully",
+        // });
       }
     } catch (error) {
       res.json({
@@ -205,26 +271,32 @@ class UserController {
   }
 
   static async delete(req, res) {
-    try {
-      const username = req.params.username;
-      const data = await user.findOne({ where: { username } });
-      if (data !== null) {
-        const deleteUser = await user.destroy({ where: { username } });
-        const deleteProfile = await profile.destroy({
-          where: { userId: data.id },
+    if (req.session.username && req.session.role === "admin") {
+      try {
+        const username = req.params.username;
+        const data = await user.findOne({ where: { username } });
+        if (data !== null) {
+          const deleteUser = await user.destroy({ where: { username } });
+          const deleteProfile = await profile.destroy({
+            where: { userId: data.id },
+          });
+          const deleteProjectUser = await projectUser.destroy({
+            where: { userId: data.id },
+          });
+          req.flash("error", `User ${data.id} has been deleted.`);
+          res.redirect("/users");
+        } else {
+          req.flash("error", "No user found.");
+          // res.json({ success: false, error: "No user found" });
+        }
+      } catch (error) {
+        res.json({
+          status: false,
+          error: error,
         });
-        const deleteProjectUser = await projectUser.destroy({
-          where: { userId: data.id },
-        });
-        res.redirect("/users");
-      } else {
-        res.json({ success: false, error: "No user found" });
       }
-    } catch (error) {
-      res.json({
-        status: false,
-        error: error,
-      });
+    } else {
+      res.redirect("/");
     }
   }
 }
