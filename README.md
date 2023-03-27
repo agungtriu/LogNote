@@ -1,5 +1,5 @@
 # LogNote
-## Technology Stack
+### Technology Stack
 
 1. Node.js
 2. Express
@@ -23,17 +23,17 @@
 
 - CSS framework menggunakan Bootstrap
 
-## Entity Relational Diagram / ERD (WAJIB!!)
+### Entity Relational Diagram / ERD (WAJIB!!)
 
 https://dbdiagram.io/d/641d66d75758ac5f1723d392
 
-## API Documentation (OPTIONAL!!)
+### API Documentation (OPTIONAL!!)
 
 Swagger API Documentation
 
 https://app.swaggerhub.com/apis-docs/Team1-LogNote/LogNote/1.0.0
 
-## Upload to cloud with Render.com (OPTIONAL!!)
+### Upload to cloud with Render.com (OPTIONAL!!)
 
 Coming soon
 
