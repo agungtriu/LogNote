@@ -168,7 +168,7 @@ class UserController {
   }
   static async editProfile(req, res) {
     try {
-      const { name, id, phone, address } = req.body;
+      const { name, phone, address } = req.body;
       const username = req.params.username;
       const resultUser = await user.update(
         {
@@ -176,12 +176,16 @@ class UserController {
         },
         { where: { username } }
       );
+      const userByUsername = await user.findOne({
+        where: { username },
+        include: [profile],
+      });
       const resultProfile = await profile.update(
         {
           phone,
           address,
         },
-        { where: { id } }
+        { where: { id: userByUsername.profile.id } }
       );
       if (resultProfile[0] === 1 && resultUser[0] === 1) {
         res.json({
