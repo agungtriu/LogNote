@@ -15,7 +15,7 @@ class NoteController {
     } catch (error) {
       res.json({
         status: false,
-        error: "server error",
+        error: error,
       });
     }
   }
@@ -59,7 +59,7 @@ class NoteController {
     } catch (error) {
       res.json({
         status: false,
-        error: "Server Error",
+        error: error,
       });
     }
   }

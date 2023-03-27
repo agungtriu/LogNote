@@ -13,6 +13,12 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER
       },
+      email: {
+        type: Sequelize.STRING
+      },
+      position: {
+        type: Sequelize.STRING
+      },
       phone: {
         type: Sequelize.STRING
       },

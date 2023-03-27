@@ -12,7 +12,7 @@ class UserController {
     } catch (error) {
       res.json({
         status: false,
-        error: "Server Error",
+        error: error,
       });
     }
   }
@@ -51,7 +51,7 @@ class UserController {
     } catch (error) {
       res.json({
         status: false,
-        error: "Server Error",
+        error: error,
       });
     }
   }
@@ -79,7 +79,7 @@ class UserController {
     } catch (error) {
       res.json({
         status: false,
-        error: "Server Error",
+        error: error,
       });
     }
   }
@@ -106,7 +106,7 @@ class UserController {
     } catch (error) {
       res.json({
         status: false,
-        error: "Server Error",
+        error: error,
       });
     }
   }
@@ -143,7 +143,7 @@ class UserController {
     } catch (error) {
       res.json({
         status: false,
-        error: "Server Error",
+        error: error,
       });
     }
   }
@@ -162,13 +162,13 @@ class UserController {
     } catch (error) {
       res.json({
         status: false,
-        error: "Server Error",
+        error: error,
       });
     }
   }
   static async editProfile(req, res) {
     try {
-      const { name, phone, address } = req.body;
+      const { name, email, position, phone, address } = req.body;
       const username = req.params.username;
       const resultUser = await user.update(
         {
@@ -182,6 +182,8 @@ class UserController {
       });
       const resultProfile = await profile.update(
         {
+          email,
+          position,
           phone,
           address,
         },
@@ -197,7 +199,7 @@ class UserController {
     } catch (error) {
       res.json({
         status: false,
-        error: "Server Error",
+        error: error,
       });
     }
   }
@@ -221,7 +223,7 @@ class UserController {
     } catch (error) {
       res.json({
         status: false,
-        error: "Server Error",
+        error: error,
       });
     }
   }
