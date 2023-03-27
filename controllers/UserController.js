@@ -22,7 +22,6 @@ class UserController {
   static async register(req, res) {
     try {
       const { username, name, password, confirmPassword } = req.body;
-      const role = "user";
       let message = "";
       if (password === confirmPassword) {
         const result = await user.findOne({ where: { username } });
@@ -31,7 +30,6 @@ class UserController {
             username,
             name,
             password,
-            role,
           });
           const resultProfile = await profile.create({
             userId: result.id,

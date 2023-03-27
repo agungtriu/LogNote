@@ -16,9 +16,16 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   project.init({
-    name: DataTypes.STRING,
-    description: DataTypes.STRING,
-    repository: DataTypes.STRING
+    name: {
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: {
+          message: "name can not be empty.",
+        },
+      },
+    },
+    description: DataTypes.TEXT,
+    repository: DataTypes.TEXT
   }, {
     sequelize,
     modelName: 'project',

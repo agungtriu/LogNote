@@ -16,8 +16,22 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   projectUser.init({
-    projectId: DataTypes.INTEGER,
-    userId: DataTypes.INTEGER
+    projectId: {
+      type: DataTypes.INTEGER,
+      validate: {
+        notEmpty: {
+          message: "projectId can not be empty.",
+        },
+      },
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      validate: {
+        notEmpty: {
+          message: "userId can not be empty.",
+        },
+      },
+    },
   }, {
     sequelize,
     modelName: 'projectUser',
