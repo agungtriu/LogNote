@@ -1,43 +1,41 @@
 # LogNote
-1. Technology Stack
+## Technology Stack
 
-  - Node.js
+1. Node.js
+2. Express
+3. Postgres (DBMS)
 
-  - Express
+- One To One
 
-  - Postgres (DBMS)
+- One To Many
 
-    - One To One
+- Many To Many 
 
-    - One To Many
+4. Sequelize (ORM)
 
-    - Many To Many 
+- Basic Query / CRUD (WAJIB)
 
-  - Sequelize (ORM)
+- Validations
 
-    - Basic Query / CRUD (WAJIB)
+- Hooks
 
-    - Validations
+5. EJS (Template Engne)
 
-    - Hooks
+- CSS framework menggunakan Bootstrap
 
-  - EJS (Template Engne)
+## Entity Relational Diagram / ERD (WAJIB!!)
 
-    - CSS framework menggunakan Bootstrap
+https://dbdiagram.io/d/641d66d75758ac5f1723d392
 
-2. Entity Relational Diagram / ERD (WAJIB!!)
+## API Documentation (OPTIONAL!!)
 
-  https://dbdiagram.io/d/641d66d75758ac5f1723d392
+Swagger API Documentation
 
-3. API Documentation (OPTIONAL!!)
+https://app.swaggerhub.com/apis-docs/Team1-LogNote/LogNote/1.0.0
 
-  Swagger API Documentation
+## Upload to cloud with Render.com (OPTIONAL!!)
 
-  https://app.swaggerhub.com/apis-docs/Team1-LogNote/LogNote/1.0.0
-
-4. Upload to cloud with Render.com (OPTIONAL!!)
-
-  Coming soon
+Coming soon
 
 ``` bash
 npx sequelize-cli model:generate --name note --attributes imageType:string,imageName:string,imageData:blob,text:text,projectId:integer
