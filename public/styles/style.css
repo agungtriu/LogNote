@@ -26,6 +26,10 @@ table {
     margin-bottom: 25px;
 }
 
+.section-notes-table {
+    margin-bottom: 25px;
+}
+
 .card-note {
     color: #fff;
     background-color: #292b2c;
@@ -39,10 +43,18 @@ table {
     background-color: #292b2c !important;
 }
 
+.bg-custom {
+    background-color: #f4f5f7;
+}
+
 .users-section > p, .users-section>  a {
     font-size: 14px;
     display: inline;
     text-decoration: none;
+}
+
+.note-title-date {
+    display: inline-block;
 }
 
 .mask {

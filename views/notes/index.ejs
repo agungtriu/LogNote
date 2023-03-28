@@ -8,54 +8,62 @@
   <% } %>
 </section>
 
-<section class="text-center">
-  <h2 class="mt-4 mb-4 fw-semibold">Note List</h2>
+<section class="text-center mt-4 mb-4">
+  <h2 class="fw-semibold">Note List</h2>
 </section>
 
-<section class="container">
-  <a class="btn btn-dark" href="\notes\add">Create Note</a>
-  <section class="table-responsive d-flex justify-content-center">
-    <table class="table table-bordered text-center mt-2">
-      <thead>
-        <tr class="table-dark">
-          <th>ID</th>
-          <th>PROJECT</th>
-          <th>TEXT</th>
-          <th>IMAGE</th>
-          <th>ACTIONS</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% if (notes.length) { %> <% notes.forEach(note => { %>
-        <tr>
-          <td><%= note.id %></td>
-          <td><%= note.project.name %></td>
-          <td><%= note.text %></td>
-          <td>
-            <%if (note.imageType) { %>
-            <img
-              src="data:<%=note.imageType%>;base64, <%=note.imageData%>"
-              class="img-thumbnail w-50"
-              alt="image"
-            />
-            <% } %>
-          </td>
-          <td>
-            <a href="\notes\delete\<%=note.id%>"
-              ><i class="fa-solid fa-trash"></i
-            ></a>
-          </td>
-        </tr>
-        <% }) %> <% } else {%>
-        <tr>
-          <td class="text-center" colspan="5">
-            Notes are empty! Insert some data.
-          </td>
-        </tr>
-        <% } %>
-      </tbody>
-    </table>
-  </section>
+<section class="section-notes-table container" id="notes">
+  <div class="row justify-content-center">
+    <div class="col-sm-12 col-md-8 col-lg-8 mb-2 ms-3">
+      <a class="btn btn-dark" href="\notes\add">Create Note</a>
+    </div>
+    <%if (!notes.length) {%>
+    <div class="col-sm-12 col-md-8 col-lg-8">
+      <div class="card-note card mb-4 mx-2">
+        <div class="card-body px-3">
+          <div
+            class="d-flex justify-content-center users-section fw-semibold mb-1"
+          >
+            <div class="note-title-date">
+              <div class="fw-lighter">Notes are empty!</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% } %> <% notes.forEach(note => { %>
+    <div class="col-sm-12 col-md-8 col-lg-8">
+      <div class="card-note card mb-4 mx-2">
+        <div class="card-body px-3">
+          <div
+            class="d-flex justify-content-between users-section fw-semibold mb-1"
+          >
+            <div class="note-title-date">
+              <span class="fw-semibold"><%=note.project.name%> </span>
+              <span class="fw-lighter">
+                - <%=note.createdAt.getDate()%>
+                <%=note.createdAt.toLocaleString('default', {month: 'long'});%>
+                <%=note.createdAt.getFullYear()%></span
+              >
+            </div>
+            <span class=""
+              ><a href="\notes\delete\<%=note.id%>"
+                ><i class="fa-solid fa-xmark" style="color: #f4f5f7"></i></a
+            ></span>
+          </div>
+          <p class="card-text fw-light"><%=note.text%></p>
+          <%if (note.imageType) { %>
+          <img
+            class="card-img border-secondary rounded"
+            src="data:<%=note.imageType%>;base64, <%=note.imageData%>"
+            alt="image"
+          />
+          <%}%>
+        </div>
+      </div>
+    </div>
+    <% }) %>
+  </div>
 </section>
 
 <%- include('../layouts/script.ejs'); -%>
