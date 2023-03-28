@@ -1,0 +1,58 @@
+<%- include('../layouts/header.ejs'); -%>
+
+<section class="message">
+  <% if(message.length > 0) { %>
+  <div class="alert alert-success"><%= message %></div>
+  <% } %> <% if(error.length > 0) { %>
+  <div class="alert alert-danger"><%= error %></div>
+  <% } %>
+</section>
+
+<section class="text-center">
+  <h2 class="my-4 fw-semibold">User List</h2>
+</section>
+
+<section class="container">
+  <section class="d-flex justify-content-center">
+    <table class="table table-bordered text-center mt-2">
+      <thead>
+        <tr class="table-dark">
+          <th>ID</th>
+          <th>NAME</th>
+          <th>USERNAME</th>
+          <th>POSITION</th>
+          <th>PHONE</th>
+          <th>EMAIL</th>
+          <th>ADDRESS</th>
+          <th>ROLE</th>
+          <th>ACTIONS</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (users.length) { %> <% users.forEach(user => { %>
+        <tr>
+          <td><%= user.id %></td>
+          <td><%= user.name %></td>
+          <td><%= user.username %></td>
+          <td><%= user.profile.position %></td>
+          <td><%= user.profile.phone %></td>
+          <td><%= user.profile.email %></td>
+          <td><%= user.profile.address %></td>
+          <td><%= user.role %></td>
+          <td>
+            <a href="/users/delete/<%= user.username %>"
+              ><i class="fa-solid fa-trash ms-2"></i
+            ></a>
+          </td>
+        </tr>
+        <% }) %> <% } else {%>
+        <tr>
+          <td class="text-center" colspan="9">Users are empty.</td>
+        </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </section>
+</section>
+
+<%- include('../layouts/script.ejs'); -%>

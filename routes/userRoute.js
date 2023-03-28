@@ -7,6 +7,8 @@ userRoute.get("/register", UserController.registerPage);
 userRoute.post("/register", UserController.register);
 userRoute.get("/login", UserController.loginPage);
 userRoute.post("/login", UserController.login);
+userRoute.get("/logout", UserController.logout);
+userRoute.get("/detail/:username", UserController.detailPage);
 userRoute.get("/detail/:username", UserController.detail);
 userRoute.get("/delete/:username", UserController.delete);
 userRoute.get("/edit/:username", UserController.editProfilePage);

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LogNote</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp"
+      crossorigin="anonymous"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.2.0/mdb.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
+    />
+  </head>
+
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark py-3">
+      <div class="container-fluid">
+        <a class="navbar-brand fw-semibold" href="\"
+          ><i class="fa-solid fa-code mx-2 me-3" style="color: #ffffff"></i
+          >LogNote</a
+        >
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-mdb-toggle="collapse"
+          data-mdb-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <i class="fas fa-bars"></i>
+        </button>
+        <div
+          class="collapse navbar-collapse justify-content-end"
+          id="navbarNav"
+        >
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+              <a class="nav-link active" href="\">Home</a>
+            </li>
+            <% if (username) { %>
+            <li class="nav-item">
+              <a class="nav-link active" href="\projects">Projects</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="\notes">Notes</a>
+            </li>
+            <%}%> <% if (username && role === "admin") { %>
+            <li class="nav-item">
+              <a class="nav-link active" href="\users">Users</a>
+            </li>
+            <% } %> <% if (username) {%>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle text-white"
+                role="button"
+                id="dropdownMenuLink"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Welcome, <%=username%>
+              </a>
+              <ul
+                class="dropdown-menu bg-dark"
+                aria-labelledby="navbarDropdown"
+              >
+                <li>
+                  <a
+                    class="dropdown-item text-white"
+                    href="\users\detail\<%=username%>"
+                    >Profile</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item text-white" href="\users\logout"
+                    >Logout</a
+                  >
+                </li>
+              </ul>
+            </li>
+            <% } else {%>
+            <li class="nav-item">
+              <a class="nav-link active" href="\users\login">Login</a>
+            </li>
+            <%}%>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </body>
+</html>

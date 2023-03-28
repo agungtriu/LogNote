@@ -1,0 +1,63 @@
+<%- include('layouts/header.ejs'); -%>
+
+<section class="message">
+  <% if(message.length > 0) { %>
+  <div class="alert alert-success"><%= message %></div>
+  <% } %> <% if(error.length > 0) { %>
+  <div class="alert alert-danger"><%= error %></div>
+  <% } %>
+</section>
+
+<section class="top-heading">
+  <div
+    class="p-5 text-center bg-image"
+    style="background-image: url('assets/background-image.jpg'); height: 400px"
+  >
+    <div class="mask" style="background-color: rgba(0, 0, 0, 0.6)">
+      <div class="d-flex justify-content-center align-items-center h-100">
+        <div class="text-white">
+          <h1 class="mb-3">LogNote</h1>
+          <h4 class="mb-3">Effortlessly Track your Team Work</h4>
+          <a
+            class="btn btn-outline-light btn-lg mt-4"
+            href="#notes"
+            role="button"
+            >Get Started</a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-notes container" id="notes">
+  <div class="row justify-content-center">
+    <% notes.forEach(note => { %>
+    <div class="col-sm-12 col-md-8 col-lg-8">
+      <div class="card-note card mb-4 mx-2">
+        <div class="card-body px-3">
+          <div class="users-section fw-semibold mb-1">
+            <h6 class="fw-semibold">
+              <%=note.project.name%><span class="fw-lighter">
+                - <%=note.createdAt.getDate()%>
+                <%=note.createdAt.toLocaleString('default', {month: 'long'});%>
+                <%=note.createdAt.getFullYear()%></span
+              >
+            </h6>
+          </div>
+          <p class="card-text fw-light"><%=note.text%></p>
+          <%if (note.imageType) { %>
+          <img
+            class="card-img border-secondary rounded"
+            src="data:<%=note.imageType%>;base64, <%=note.imageData%>"
+            alt="image"
+          />
+          <%}%>
+        </div>
+      </div>
+    </div>
+    <% }) %>
+  </div>
+</section>
+
+<%- include('layouts/footer.ejs'); -%>
