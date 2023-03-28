@@ -26,6 +26,10 @@ table {
     margin-bottom: 25px;
 }
 
+.section-notes-table {
+    margin-bottom: 25px;
+}
+
 .card-note {
     color: #fff;
     background-color: #292b2c;
@@ -43,6 +47,10 @@ table {
     font-size: 14px;
     display: inline;
     text-decoration: none;
+}
+
+.note-title-date {
+    display: inline-block;
 }
 
 .mask {
