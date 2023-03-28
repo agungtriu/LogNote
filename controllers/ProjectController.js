@@ -8,10 +8,22 @@ class ProjectController {
   static async getAll(req, res) {
     if (req.session.username) {
       try {
-        const projects = await project.findAll({
+        const allProjects = await project.findAll({
           include: [user],
           order: [["id", "ASC"]],
         });
+        const projects = [];
+        if (req.session.role === "user") {
+          allProjects.forEach((project) => {
+            project.users.forEach((user) => {
+              if (user.dataValues.username === req.session.username) {
+                projects.push(project);
+              }
+            });
+          });
+        } else {
+          projects.push(...allProjects);
+        }
         // res.json({ status: true, count: projects.length, data: projects });
         res.render("projects/index.ejs", {
           projects,

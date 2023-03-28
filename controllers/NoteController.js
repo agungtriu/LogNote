@@ -1,12 +1,34 @@
 const e = require("express");
+const { where } = require("sequelize");
 const models = require("../models");
 const note = models.note;
 const project = models.project;
+const user = models.user;
 class NoteController {
   static async getAll(req, res) {
     if (req.session.username) {
       try {
-        const notes = await note.findAll({ include: [project] });
+        const allProjects = await project.findAll({
+          include: [user],
+          order: [["id", "ASC"]],
+        });
+        const projects = [];
+        if (req.session.role === "user") {
+          allProjects.forEach((project) => {
+            project.users.forEach((user) => {
+              if (user.dataValues.username === req.session.username) {
+                projects.push(project);
+              }
+            });
+          });
+        } else {
+          projects.push(...allProjects);
+        }
+        const projectIds = projects.map((project) => project.dataValues.id);
+        const notes = await note.findAll({
+          include: [project],
+          where: { projectId: projectIds },
+        });
         notes.map((note) => {
           if (note.imageData) {
             const noteImage = note.imageData.toString("base64");
@@ -33,7 +55,22 @@ class NoteController {
 
   static async addPage(req, res) {
     if (req.session.username) {
-      const projects = await project.findAll({ order: [["id", "ASC"]] });
+      const allProjects = await project.findAll({
+        include: [user],
+        order: [["id", "ASC"]],
+      });
+      const projects = [];
+      if (req.session.role === "user") {
+        allProjects.forEach((project) => {
+          project.users.forEach((user) => {
+            if (user.dataValues.username === req.session.username) {
+              projects.push(project);
+            }
+          });
+        });
+      } else {
+        projects.push(...allProjects);
+      }
       res.render("notes/createPage.ejs", { projects });
     } else {
       res.redirect("/");
