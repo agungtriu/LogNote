@@ -40,9 +40,28 @@
           <td><%= user.profile.address %></td>
           <td><%= user.role %></td>
           <td>
+            <% if(user.username !== sessionUsername){ %>
             <a href="/users/delete/<%= user.username %>"
-              ><i class="fa-solid fa-trash ms-2"></i
+              ><i class="fa-solid fa-trash me-2"></i
             ></a>
+            <%}%>
+            
+            <form style="display: inline;" action="/users/role/change" method="post">
+              <input type="hidden" name="username" value="<%= user.username%>"/>
+              <% 
+              if (user.role === "admin"){
+              %>
+              <input type="hidden" name="role" value="user" />
+              <button type="submit" class="clear">
+                <i class="fa-solid fa-user"></i>
+              </button> 
+              <%} else {%>
+              <input type="hidden" name="role" value="admin" />
+              <button type="submit" class="clear">
+                <i type="submit" class="fa-solid fa-user-gear"></i>
+              </button>
+              <%}%>
+            </form>
           </td>
         </tr>
         <% }) %> <% } else {%>

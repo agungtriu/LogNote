@@ -15,5 +15,6 @@ userRoute.get("/edit/:username", UserController.editProfilePage);
 userRoute.post("/edit/:username", UserController.editProfile);
 userRoute.get("/password/edit/:username", UserController.editPasswordPage);
 userRoute.post("/password/edit/:username", UserController.editPassword);
+userRoute.post("/role/change", UserController.changeRole);
 
 module.exports = userRoute;

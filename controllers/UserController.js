@@ -5,21 +5,26 @@ const profile = models.profile;
 const projectUser = models.projectUser;
 class UserController {
   static async getAll(req, res) {
-    try {
-      const users = await user.findAll({
-        include: [profile],
-        order: [["role", "ASC"]],
-      });
-      res.render("users/index.ejs", {
-        users,
-        message: req.flash("success"),
-        error: req.flash("error"),
-      });
-    } catch (error) {
-      res.json({
-        status: false,
-        error: error,
-      });
+    if (req.session.username && req.session.role === "admin") {
+      try {
+        const users = await user.findAll({
+          include: [profile],
+          order: [["role", "ASC"]],
+        });
+        res.render("users/index.ejs", {
+          users,
+          sessionUsername: req.session.username,
+          message: req.flash("success"),
+          error: req.flash("error"),
+        });
+      } catch (error) {
+        res.json({
+          status: false,
+          error: error,
+        });
+      }
+    } else {
+      res.redirect("/");
     }
   }
   static registerPage(req, res) {
@@ -143,6 +148,35 @@ class UserController {
           error: "not found",
         });
         // res.redirect("/notes");
+      }
+    } catch (error) {
+      res.json({
+        status: false,
+        error: error,
+      });
+    }
+  }
+  static async changeRole(req, res) {
+    try {
+      const { username, role } = req.body;
+      let message = "";
+      const result = await user.update(
+        {
+          role,
+        },
+        { where: { username } }
+      );
+
+      console.log(result);
+      if (result[0] === 1) {
+        req.session.role = role;
+        req.flash("success", `${username} as a ${role}`);
+        res.redirect(`/users`);
+        // message = "role has been changed";
+        // res.json({ status: true, message: message });
+      } else {
+        message = "role cannot change";
+        res.json({ status: false, error: message });
       }
     } catch (error) {
       res.json({
