@@ -72,3 +72,9 @@ a {
 .gradient-custom {
     background: #292b2c;
 }
+
+button.clear {
+    border: none;
+    outline: none;
+    background: none;
+}
