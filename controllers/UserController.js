@@ -188,9 +188,10 @@ class UserController {
         { where: { username } }
       );
 
-      console.log(result);
       if (result[0] === 1) {
-        req.session.role = role;
+        if (req.session.username === username) {
+          req.session.role = role;
+        }
         req.flash("success", `${username} as a ${role}`);
         res.redirect(`/users`);
         // message = "role has been changed";
