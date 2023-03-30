@@ -6,7 +6,7 @@ const project = models.project;
 const user = models.user;
 class NoteController {
   static async getAll(req, res) {
-    if (req.session.username) {
+    if (req.session.username && req.session.role === "admin") {
       try {
         const allProjects = await project.findAll({
           include: [user],
@@ -28,6 +28,7 @@ class NoteController {
         const notes = await note.findAll({
           include: [project],
           where: { projectId: projectIds },
+          order: [["createdAt", "DESC"]],
         });
         notes.map((note) => {
           if (note.imageData) {
@@ -49,6 +50,7 @@ class NoteController {
         });
       }
     } else {
+      req.flash("error", "You don't have permission.");
       res.redirect("/");
     }
   }
@@ -105,7 +107,11 @@ class NoteController {
         }
         // res.json({ status: true, data: result });
         req.flash("success", "Note has been created.");
-        res.redirect("/notes");
+        if (req.session.role === "admin") {
+          res.redirect("/notes");
+        } else {
+          res.redirect(`/users/detail/${req.session.username}`);
+        }
       } catch (error) {
         res.json({
           status: false,
@@ -128,7 +134,11 @@ class NoteController {
         if (result === 1) {
           // res.json({ status: true, data: result });
           req.flash("error", "Note has been deleted.");
-          res.redirect("/notes");
+          if (req.session.role === "admin") {
+            res.redirect("/notes");
+          } else {
+            res.redirect(`/users/detail/${req.session.username}`);
+          }
         } else {
           res.json({ success: false, error: "note not found" });
         }

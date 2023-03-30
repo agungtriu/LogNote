@@ -52,10 +52,11 @@
             <li class="nav-item">
               <a class="nav-link active" href="\projects">Projects</a>
             </li>
+            <% if (role === "admin") { %>
             <li class="nav-item">
               <a class="nav-link active" href="\notes">Notes</a>
             </li>
-            <%}%> <% if (username && role === "admin") { %>
+            <% } %> <%}%> <% if (username && role === "admin") { %>
             <li class="nav-item">
               <a class="nav-link active" href="\users">Users</a>
             </li>

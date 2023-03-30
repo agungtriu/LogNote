@@ -1,5 +1,7 @@
 const { where } = require("sequelize");
 const models = require("../models");
+const project = models.project;
+const note = models.note;
 const user = models.user;
 const profile = models.profile;
 const projectUser = models.projectUser;
@@ -28,50 +30,62 @@ class UserController {
     }
   }
   static registerPage(req, res) {
-    res.render("users/register/index.ejs", { message: req.flash("error") });
+    if (!req.session.username) {
+      res.render("users/register/index.ejs", { message: req.flash("error") });
+    } else {
+      res.redirect("/");
+    }
   }
   static async register(req, res) {
-    try {
-      const { username, name, password, confirmPassword } = req.body;
-      let message = "";
-      if (password === confirmPassword) {
-        const result = await user.findOne({ where: { username } });
-        if (result === null) {
-          const result = await user.create({
-            username,
-            name,
-            password,
-          });
-          const resultProfile = await profile.create({
-            userId: result.id,
-          });
-          const getUser = await user.findOne({ where: { username } });
-          req.session.username = getUser.username;
-          req.session.role = getUser.role;
-          message = `${username} has been created`;
-          req.flash("success", message);
-          res.redirect("/");
+    if (req.session.username) {
+      try {
+        const { username, name, password, confirmPassword } = req.body;
+        let message = "";
+        if (password === confirmPassword) {
+          const result = await user.findOne({ where: { username } });
+          if (result === null) {
+            const result = await user.create({
+              username,
+              name,
+              password,
+            });
+            const resultProfile = await profile.create({
+              userId: result.id,
+            });
+            const getUser = await user.findOne({ where: { username } });
+            req.session.username = getUser.username;
+            req.session.role = getUser.role;
+            message = `${username} has been created`;
+            req.flash("success", message);
+            res.redirect("/");
+          } else {
+            message = `${username} not available`;
+            req.flash("error", message);
+            res.redirect("/users/register");
+          }
         } else {
-          message = `${username} not available`;
+          message = "password and confirm password not match";
           req.flash("error", message);
           res.redirect("/users/register");
         }
-      } else {
-        message = "password and confirm password not match";
-        req.flash("error", message);
+      } catch (error) {
+        req.flash("error", "Internal Server Error");
         res.redirect("/users/register");
+        // res.json({
+        //   status: false,
+        //   error: error,
+        // });
       }
-    } catch (error) {
-      req.flash("error", "Internal Server Error");
-      res.redirect("/users/register");
-      // res.json({
-      //   status: false,
-      //   error: error,
-      // });
+    } else {
+      res.redirect("/");
     }
   }
   static loginPage(req, res) {
-    res.render("users/login/index.ejs", { message: req.flash("error") });
+    if (!req.session.username) {
+      res.render("users/login/index.ejs", { message: req.flash("error") });
+    } else {
+      res.redirect("/");
+    }
   }
   static async login(req, res) {
     try {
@@ -117,18 +131,6 @@ class UserController {
       // });
     }
   }
-  static async detailPage(req, res) {
-    const username = req.params.username;
-    const detail = await user.findOne({
-      include: [profile],
-      where: { username },
-    });
-    res.render("users/profiles/index.ejs", {
-      detail,
-      message: req.flash("success"),
-      error: req.flash("error"),
-    });
-  }
   static async detail(req, res) {
     try {
       const username = req.params.username;
@@ -137,17 +139,40 @@ class UserController {
         where: { username },
       });
       if (detail !== null) {
-        res.json({
-          status: true,
-          data: detail,
+        const allProjects = await project.findAll({
+          include: [user],
+          order: [["id", "ASC"]],
         });
-        // res.render("users/detail.ejs", { detail });
+        const projects = [];
+        allProjects.forEach((project) => {
+          project.users.forEach((user) => {
+            if (user.dataValues.username === req.session.username) {
+              projects.push(project);
+            }
+          });
+        });
+        const projectIds = projects.map((project) => project.dataValues.id);
+        const notes = await note.findAll({
+          include: [project],
+          where: { projectId: projectIds },
+          order: [["createdAt", "DESC"]],
+        });
+        notes.map((note) => {
+          if (note.imageData) {
+            const noteImage = note.imageData.toString("base64");
+            note["imageData"] = noteImage;
+            return note;
+          }
+        });
+        res.render("users/profiles/index.ejs", {
+          detail,
+          notes,
+          message: req.flash("success"),
+          error: req.flash("error"),
+        });
       } else {
-        res.json({
-          status: false,
-          error: "not found",
-        });
-        // res.redirect("/notes");
+        req.flash("error", `User ${username} not found.`);
+        res.redirect("/notes");
       }
     } catch (error) {
       res.json({

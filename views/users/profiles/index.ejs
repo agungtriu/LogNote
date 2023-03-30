@@ -8,10 +8,10 @@
   <% } %>
 </section>
 
-<section class="vh-100">
-  <div class="container py-5 h-100">
+<section class="">
+  <div class="container px-4 pt-5">
     <div class="row d-flex justify-content-center align-items-center">
-      <div class="col col-lg-12">
+      <div class="col-sm-12 col-md-8 col-lg-8">
         <div class="card mb-3" style="border-radius: 0.5rem">
           <div class="row g-0">
             <div
@@ -69,4 +69,64 @@
   </div>
 </section>
 
-<%- include('../../layouts/script.ejs'); -%>
+<% if (role === "user") { %>
+<section class="text-center mt-4 mb-4">
+  <h2 class="fw-semibold">Note List</h2>
+</section>
+
+<section class="section-notes-table container" id="notes">
+  <div class="row justify-content-center">
+    <div class="col-sm-12 col-md-8 col-lg-8 mb-2 ms-3">
+      <a class="btn btn-dark btn-create-custom" href="\notes\add"
+        >Create Note</a
+      >
+    </div>
+    <%if (!notes.length) {%>
+    <div class="col-sm-12 col-md-8 col-lg-8">
+      <div class="card-note card mb-4 mx-2">
+        <div class="card-body px-3">
+          <div
+            class="d-flex justify-content-center users-section fw-semibold mb-1"
+          >
+            <div class="note-title-date">
+              <div class="fw-lighter">Notes are empty!</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% } %> <% notes.forEach(note => { %>
+    <div class="col-sm-12 col-md-8 col-lg-8">
+      <div class="card-note card mb-4 mx-2">
+        <div class="card-body px-3">
+          <div
+            class="d-flex justify-content-between users-section fw-semibold mb-1"
+          >
+            <div class="note-title-date">
+              <span class="fw-semibold"><%=note.project.name%> </span>
+              <span class="fw-lighter">
+                - <%=note.createdAt.getDate()%>
+                <%=note.createdAt.toLocaleString('default', {month: 'long'});%>
+                <%=note.createdAt.getFullYear()%></span
+              >
+            </div>
+            <span class=""
+              ><a href="\notes\delete\<%=note.id%>"
+                ><i class="fa-solid fa-xmark" style="color: #f4f5f7"></i></a
+            ></span>
+          </div>
+          <p class="card-text fw-light"><%=note.text%></p>
+          <%if (note.imageType) { %>
+          <img
+            class="card-img border-secondary rounded"
+            src="data:<%=note.imageType%>;base64, <%=note.imageData%>"
+            alt="image"
+          />
+          <%}%>
+        </div>
+      </div>
+    </div>
+    <% }) %>
+  </div>
+</section>
+<% } %> <%- include('../../layouts/script.ejs'); -%>
