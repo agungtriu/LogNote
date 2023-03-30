@@ -8,6 +8,7 @@ class HomeController {
     try {
       const notes = await note.findAll({
         include: [project],
+        order: [["createdAt", "DESC"]],
       });
       notes.map((note) => {
         if (note.imageData) {

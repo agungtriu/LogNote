@@ -8,38 +8,6 @@
   <% } %>
 </section>
 
-<section class="top-heading">
-  <div
-    class="p-5 text-center bg-image"
-    style="background-image: url('assets/background-image.jpg'); height: 400px"
-  >
-    <div class="mask" style="background-color: rgba(0, 0, 0, 0.6)">
-      <div class="d-flex justify-content-center align-items-center h-100">
-        <div class="text-white">
-          <h1 class="mb-3">LogNote</h1>
-          <h4 class="mb-3">Effortlessly Track your Team Work</h4>
-          <div>
-            <a
-              class="btn btn-secondary bg-custom text-dark fw-semibold btn-lg mt-4"
-              href="#notes"
-              role="button"
-              >Get Started</a
-            >
-          </div>
-          <div>
-            <a
-              class="btn btn-outline-secondary btn-lg text-white mt-3"
-              href="/notes/add"
-              role="button"
-              >Add Note</a
-            >
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <section class="section-notes container" id="notes">
   <div class="row justify-content-center">
     <% notes.forEach(note => { %>
