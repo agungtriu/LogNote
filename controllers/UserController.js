@@ -37,47 +37,43 @@ class UserController {
     }
   }
   static async register(req, res) {
-    if (req.session.username) {
-      try {
-        const { username, name, password, confirmPassword } = req.body;
-        let message = "";
-        if (password === confirmPassword) {
-          const result = await user.findOne({ where: { username } });
-          if (result === null) {
-            const result = await user.create({
-              username,
-              name,
-              password,
-            });
-            const resultProfile = await profile.create({
-              userId: result.id,
-            });
-            const getUser = await user.findOne({ where: { username } });
-            req.session.username = getUser.username;
-            req.session.role = getUser.role;
-            message = `${username} has been created`;
-            req.flash("success", message);
-            res.redirect("/");
-          } else {
-            message = `${username} not available`;
-            req.flash("error", message);
-            res.redirect("/users/register");
-          }
+    try {
+      const { username, name, password, confirmPassword } = req.body;
+      let message = "";
+      if (password === confirmPassword) {
+        const result = await user.findOne({ where: { username } });
+        if (result === null) {
+          const result = await user.create({
+            username,
+            name,
+            password,
+          });
+          const resultProfile = await profile.create({
+            userId: result.id,
+          });
+          const getUser = await user.findOne({ where: { username } });
+          req.session.username = getUser.username;
+          req.session.role = getUser.role;
+          message = `${username} has been created`;
+          req.flash("success", message);
+          res.redirect("/");
         } else {
-          message = "password and confirm password not match";
+          message = `${username} not available`;
           req.flash("error", message);
           res.redirect("/users/register");
         }
-      } catch (error) {
-        req.flash("error", "Internal Server Error");
+      } else {
+        message = "password and confirm password not match";
+        req.flash("error", message);
         res.redirect("/users/register");
-        // res.json({
-        //   status: false,
-        //   error: error,
-        // });
       }
-    } else {
-      res.redirect("/");
+    } catch (error) {
+      req.flash("error", "Internal Server Error");
+      res.redirect("/users/register");
+      // res.json({
+      //   status: false,
+      //   error: error,
+      // });
     }
   }
   static loginPage(req, res) {
