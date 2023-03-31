@@ -89,6 +89,7 @@ class UserController {
       const result = await user.findOne({ where: { username } });
       if (result !== null) {
         if (password === result.password) {
+          req.session.userId = result.id;
           req.session.username = result.username;
           req.session.role = result.role;
           req.flash("success", `Welcome back, ${result.username}`);
@@ -114,6 +115,7 @@ class UserController {
   }
   static logout(req, res) {
     try {
+      delete req.session.userId;
       delete req.session.username;
       delete req.session.role;
       req.flash("success", "You have successfully logged out.");
