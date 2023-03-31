@@ -165,17 +165,17 @@ class ProjectController {
         const selfId = req.session.userId;
         if (userIds !== undefined) {
           const values = [];
-          values.push({ projectId: result.id, userId: selfId });
+          values.push({ projectId: id, userId: selfId });
           if (typeof userIds === "object") {
             userIds.forEach((id) => {
-              values.push({ projectId: result.id, userId: id });
+              values.push({ projectId: id, userId: id });
             });
           } else {
-            values.push({ projectId: result.id, userId: userIds });
+            values.push({ projectId: id, userId: userIds });
           }
           await projectuser.bulkCreate(values);
         } else {
-          await projectuser.create({ projectId: result.id, userId: selfId });
+          await projectuser.create({ projectId: id, userId: selfId });
         }
 
         if (result[0] === 1) {
