@@ -43,9 +43,10 @@ class ProjectController {
   static async createPage(req, res) {
     if (req.session.username) {
       try {
-        const users = await user.findAll({
+        let users = await user.findAll({
           order: [["id", "ASC"]],
         });
+        users = users.filter((user) => user.username !== req.session.username);
         res.render("projects/createPage.ejs", { users });
       } catch (error) {
         res.json({
@@ -61,21 +62,25 @@ class ProjectController {
     if (req.session.username) {
       try {
         const { name, description, repository, userIds } = req.body;
+        const selfId = req.session.userId;
         const result = await project.create({
           name,
           description,
           repository,
         });
-
-        if (typeof userIds === "object") {
+        if (userIds !== undefined) {
           const values = [];
-          userIds.forEach((id) => {
-            values.push({ projectId: result.id, userId: id });
-          });
-
-          const resultMembers = await projectuser.bulkCreate(values);
+          values.push({ projectId: result.id, userId: selfId });
+          if (typeof userIds === "object") {
+            userIds.forEach((id) => {
+              values.push({ projectId: result.id, userId: id });
+            });
+          } else {
+            values.push({ projectId: result.id, userId: userIds });
+          }
+          await projectuser.bulkCreate(values);
         } else {
-          await projectuser.create({ projectId: result.id, userId: userIds });
+          await projectuser.create({ projectId: result.id, userId: selfId });
         }
         req.flash("success", `Project "${name}" has been created.`);
         res.redirect("/projects");
@@ -127,7 +132,8 @@ class ProjectController {
           where: { id },
           include: [user],
         });
-        const users = await user.findAll({ order: [["username", "ASC"]] });
+        let users = await user.findAll({ order: [["username", "ASC"]] });
+        users = users.filter((user) => user.username !== req.session.username);
         res.render("projects/editPage.ejs", { projects, users });
       } catch (error) {
         res.json({
@@ -156,15 +162,20 @@ class ProjectController {
         const deleteProjectUser = await projectuser.destroy({
           where: { projectId: id },
         });
-
-        if (typeof userIds === "object") {
+        const selfId = req.session.userId;
+        if (userIds !== undefined) {
           const values = [];
-          userIds.forEach((userId) => {
-            values.push({ projectId: id, userId: userId });
-          });
-          const resultMembers = await projectuser.bulkCreate(values);
+          values.push({ projectId: id, userId: selfId });
+          if (typeof userIds === "object") {
+            userIds.forEach((id) => {
+              values.push({ projectId: id, userId: id });
+            });
+          } else {
+            values.push({ projectId: id, userId: userIds });
+          }
+          await projectuser.bulkCreate(values);
         } else {
-          await projectuser.create({ projectId: id, userId: userIds });
+          await projectuser.create({ projectId: id, userId: selfId });
         }
 
         if (result[0] === 1) {
