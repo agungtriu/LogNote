@@ -29,9 +29,9 @@ Swagger API Documentation
 
 https://app.swaggerhub.com/apis-docs/Team1-LogNote/LogNote/1.0.0
 
-### Upload to cloud with Render.com (OPTIONAL!!)
+### Upload to cloud with Glitch.me (OPTIONAL!!)
 
-Coming soon
+https://chestnut-phrygian-pyjama.glitch.me/
 
 ``` bash
 npx sequelize-cli model:generate --name note --attributes imageType:string,imageName:string,imageData:blob,text:text,projectId:integer
